@@ -1,14 +1,92 @@
 from random import randint, choice
-
 from string import ascii_lowercase, ascii_uppercase, punctuation, digits
 
 
+def help():
+    """Выводит список доступных команд."""
+    print("\n  📖 Available commands:")
+    print("  🆘 help - Show this help message")
+    print("  🔑 get  - Generate a random password")
+    print("  🚪 exit - Exit the program\n")
+
+
+class ValidatorLength:
+    def __set_name__(self, owner, name):
+        self.name = '_' + name
+
+    def __get__(self, instance, owner):
+        return getattr(instance, self.name)
+    
+    def verification(self, instance, value):
+        if not isinstance(value, str):
+            print('\nError: Value must be a string. Try again 😔', end='\n\n')
+        elif not value.isdigit():
+            print('\nError: The string must contain only numbers. Try again 😔', end='\n\n')
+        elif self.name == '_min_length' and int(value) < 8:
+            print('\nError: Password length must be more than 8 characters. Try again 😔', end='\n\n')
+        elif self.name == '_max_length' and instance.min_length > int(value):
+            print('\nError: The maximum length must be greater than the minimum. Try again 😔', end='\n\n')
+        elif self.name == '_max_length' and int(value) > 100:
+            print('\nError: The password length should not exceed 100 characters. Try again 😔', end='\n\n')
+        else:
+            return True
+        return False
+    
+    def __set__(self, instance, value):
+        if not self.verification(instance, value):
+            raise ValueError
+        setattr(instance, self.name, int(value))
+        
+
 class RandomPassword:
-    def __init__(self, psw_chars, min_length, max_length):
-        self.psw_chars = psw_chars
-        self.min_length = min_length
-        self.max_length = max_length
+    min_length = ValidatorLength()
+    max_length = ValidatorLength()
+
+    def __init__(self):
+        self.psw_chars = (ascii_lowercase, ascii_uppercase, digits, punctuation)
+        
+        while True:
+            min_length = input('Enter the minimum password length (min 8 characters): ')
+
+            try:
+                self.min_length = min_length
+                break
+            except ValueError:
+                continue
+
+        while True:
+            max_length = input('Enter the maximum password length (max 100 characters): ')
+
+            try:
+                self.max_length = max_length
+                break
+            except ValueError:
+                continue
 
     def __call__(self, *args, **kwds):
-        return ''.join([choice(self.psw_chars) for _ in range(randint(self.min_length, self.max_length))])
+        password = ''
+        for _ in range(randint(self.min_length, self.max_length)):
+            password += choice(choice(self.psw_chars))
+        return password
     
+
+def main():
+    print("Hello 🙋‍♀️")
+    commands = ('help', 'get', 'exit')
+
+    while True:
+        inp = input(f'Enter the command {commands}: ')
+        if inp not in commands:
+            print('\nError: the command not recognized. Try again 😔', end='\n\n')
+            continue
+        elif inp == 'help':
+            help()
+        elif inp == 'get':
+            print(RandomPassword()())
+        elif inp == 'exit':
+            break 
+        
+    print("Good luck 😉")
+
+if __name__ == "__main__":
+    main()
