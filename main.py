@@ -43,10 +43,27 @@ class RandomPassword:
 
     def __init__(self):
         self.psw_chars = (ascii_lowercase, ascii_uppercase, digits, punctuation)
-        
+        self.set_password_length()
+
+    def set_password_length(self):
+        if input('Use fixed password length (y/n): ') == 'y':
+            self._set_fixed_length()
+        else:
+            self._set_min_max_length()
+
+    def _set_fixed_length(self):
+        while True:
+            length = input('Enter password length (min 8 characters): ')
+            try:
+                self.min_length = length
+                self.max_length = length
+                break
+            except ValueError:
+                continue
+
+    def _set_min_max_length(self):
         while True:
             min_length = input('Enter the minimum password length (min 8 characters): ')
-
             try:
                 self.min_length = min_length
                 break
@@ -55,7 +72,6 @@ class RandomPassword:
 
         while True:
             max_length = input('Enter the maximum password length (max 100 characters): ')
-
             try:
                 self.max_length = max_length
                 break
@@ -70,7 +86,7 @@ class RandomPassword:
     
 
 def main():
-    print("Hello 🙋‍♀️")
+    print("Hello 🙋")
     commands = ('help', 'get', 'exit')
 
     while True:
