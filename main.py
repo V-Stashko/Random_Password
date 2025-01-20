@@ -3,7 +3,6 @@ from string import ascii_lowercase, ascii_uppercase, punctuation, digits
 
 
 def help():
-    """Выводит список доступных команд."""
     print("\n  📖 Available commands:")
     print("  🆘 help - Show this help message")
     print("  🔑 get  - Generate a random password")
@@ -79,10 +78,21 @@ def main():
         if inp not in commands:
             print('\nError: the command not recognized. Try again 😔', end='\n\n')
             continue
+
         elif inp == 'help':
             help()
+
         elif inp == 'get':
-            print(RandomPassword()())
+            while not (count := input(f"Enter the required number of passwords: ")).isdigit() or count == '0':
+                print('\nError: quantity must be a number from 0. Try again 😔', end='\n\n')
+
+            random_password = RandomPassword()
+
+            print()
+            for _ in range(int(count)):
+                print(random_password())
+            print()
+
         elif inp == 'exit':
             break 
         
